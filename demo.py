@@ -1,9 +1,12 @@
-from PyQt5.QtWidgets import (QWidget, QHBoxLayout)
+import logging
+
+from PyQt5.QtWidgets import QWidget, QHBoxLayout
 from QVideo.lib import QVideoScreen
+
+logger = logging.getLogger(__name__)
 
 
 class demo(QWidget):
-
     def __init__(self, QCameraWidget, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.screen = QVideoScreen(self)
@@ -31,29 +34,32 @@ def parse_command_line():
     import argparse
 
     parser = argparse.ArgumentParser()
-    opt = dict(action='store_true')
+    opt = dict(action="store_true")
     arg = parser.add_argument
-    arg('-c', dest='opencv', help='OpenCV camera', **opt)
-    arg('-s', dest='spinnaker', help='Spinnaker camera', **opt)
+    arg("-c", dest="opencv", help="OpenCV camera", **opt)
+    arg("-s", dest="spinnaker", help="Spinnaker camera", **opt)
     return parser.parse_known_args()
 
 
 def choose_camera(args):
     from QVideo.cameras.Noise import QNoiseTree as QNoiseWidget
+
     CameraWidget = QNoiseWidget
 
     if args.opencv:
         try:
             from QVideo.cameras.OpenCV import QOpenCVTree as QOpenCVWidget
+
             CameraWidget = QOpenCVWidget
         except ImportError:
-            print('Could not open OpenCV camera')
+            logger.exception("You must install opencv-python")
     elif args.spinnaker:
         try:
             from QVideo.cameras.Spinnaker import QSpinnakerWidget
+
             CameraWidget = QSpinnakerWidget
         except ImportError:
-            print('Could not open Spinnaker camera')
+            logger.exception("You must install the Spinnaker SDK to open a Spinnaker camera.")
 
     return CameraWidget
 
@@ -71,5 +77,5 @@ def main():
     sys.exit(app.exec_())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

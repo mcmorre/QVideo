@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot
 
-
 class DVRdemo(QWidget):
 
     def __init__(self, *args, cameraWidget=None, **kwargs):
